@@ -31,8 +31,8 @@ pihole-config:
 	sudo sed -i 's/80/8080/g' /etc/lighttpd/lighttpd.conf
 	sudo service lighttpd restart
 	# edit traefik rule
-	sed -i 's/DOMAIN/$$DOMAIN/g' $$DATA/traefik/rules/pihole
-	sed -i 's/PIHOLEIP/$$PIHOLEIP/g' $$DATA/traefik/rules/pihole
+	sed -i 's/DOMAIN/$$DOMAIN/g' $$DATA/traefik/rules/pihole.yml
+	sed -i 's/PIHOLEIP/$$PIHOLEIP/g' $$DATA/traefik/rules/pihole.yml
 
 traefik-setup:
 	mkdir -p $$DATA/shared
