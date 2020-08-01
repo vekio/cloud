@@ -11,10 +11,9 @@ docker-install:
 	sudo pip3 install docker-compose
 
 setup:
-	mkdir $$DATA/traefik
-	mkdir $$DATA/shared
+	mkdir -P $$DATA/shared
 	# acme	
-	mkdir $$DATA/traefik/acme
+	mkdir -p $$DATA/traefik/acme
 	touch $$DATA/traefik/acme/acme.json
 	chmod 600 $$DATA/traefik/acme/acme.json
 	# logs
