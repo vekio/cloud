@@ -20,7 +20,6 @@ services:
       - --entryPoints.http.address=:80
       - --entrypoints.http.http.redirections.entryPoint.to=https
       - --entryPoints.https.address=:443
-      - --entryPoints.traefik.address=:8080
       - --api=true
       - --log=true
       - --log.level=DEBUG # (Default: error) DEBUG, INFO, WARN, ERROR, FATAL, PANIC
@@ -47,7 +46,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik/rules:/rules
+      - $DATA/traefik/rules:/rules
       - $DATA/traefik/traefik.log:/traefik.log
       - $DATA/traefik/acme/acme.json:/acme.json
       - $DATA/shared:/shared

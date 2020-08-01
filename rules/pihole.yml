@@ -1,0 +1,26 @@
+http:
+
+  routers:
+    pihole:
+        rule: Host(`pihole.DOMAIN`)
+        entryPoints:
+          - https
+        middlewares:
+          - pihole-admin
+        service: pihole
+        tls:
+          domains:
+            - main: "DOMAIN"
+              sans: 
+                - "*.DOMAIN"
+
+  middlewares:
+    pihole-admin:
+      addPrefix:
+        prefix: "/admin"
+
+  services:
+    pihole:
+      loadBalancer:
+        servers:
+          - url: "http://PIHOLEIP:8080"

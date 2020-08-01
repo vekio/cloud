@@ -1,4 +1,4 @@
-# echo $(htpasswd -nb user password) | sed -e s/\\$/\\$\\$/g
+# echo $(htpasswd -nb user password)
 http:
   middlewares:
     basic-auth:
