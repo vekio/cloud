@@ -13,7 +13,7 @@ docker-install:
 init: docker-install traefik-setup pihole
 	echo "Todo listo"
 
-pihole: pihole-install pihole-config
+pihole: pihole-install pihole-port pihole-rule
 	echo "Pi-hole ready"
 
 pihole-install:
@@ -26,10 +26,12 @@ pihole-install:
 	sudo cp pi-hole.conf /etc/unbound/unbound.conf.d/pi-hole.conf
 	sudo service unbound start
 
-pihole-config:
+pihole-port:
 	# change pihole default port to 8080
 	sudo sed -i 's/80/8080/g' /etc/lighttpd/lighttpd.conf
 	sudo service lighttpd restart
+
+pihole-rule:
 	# edit traefik rule
 	sed -i 's/DOMAIN/$$DOMAIN/g' $$DATA/traefik/rules/pihole.yml
 	sed -i 's/PIHOLEIP/$$PIHOLEIP/g' $$DATA/traefik/rules/pihole.yml
