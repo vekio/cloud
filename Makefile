@@ -7,7 +7,7 @@ docker-install:
 	sudo apt install -y libffi-dev libssl-dev python3 python3-pip
 	sudo pip3 install docker-compose
 
-traefik-setup:
+setup:
 	# acme
 	mkdir traefik/acme
 	touch traefik/acme/acme.json
@@ -18,6 +18,8 @@ traefik-setup:
 	docker network create proxy
 	# basic-auth (htpasswd)
 	sudo apt install -y apache2-utils
+	# .env
+	cp .env_example .env
 
 traefik-up:
 	docker-compose -f yml-files/traefik.yml --env-file=.env up -d
