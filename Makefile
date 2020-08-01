@@ -10,6 +10,15 @@ docker-install:
 	sudo apt install -y libffi-dev libssl-dev python3 python3-pip
 	sudo pip3 install docker-compose
 
+pihole-install:
+	# pihole install
+	curl -sSL https://install.pi-hole.net | bash
+	# unbound install
+	sudo apt install unbound
+	wget -O root.hints https://www.internic.net/domain/named.root
+	sudo mv root.hints /var/lib/unbound/
+	sudo cp pi-hole.conf /etc/unbound/unbound.conf.d/pi-hole.conf
+
 setup:
 	mkdir -P $$DATA/shared
 	# acme	
