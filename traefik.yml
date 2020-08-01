@@ -14,27 +14,55 @@ services:
     ports:
       - 80:80
       - 443:443
+    command:
+      - --global.checkNewVersion=true
+      - --global.sendAnonymousUsage=true
+      - --entryPoints.http.address=:80
+      - --entrypoints.http.http.redirections.entryPoint.to=https
+      - --entryPoints.https.address=:443
+      - --entryPoints.traefik.address=:8080
+      - --api=true
+      - --log=true
+      - --log.level=DEBUG # (Default: error) DEBUG, INFO, WARN, ERROR, FATAL, PANIC
+      - --accessLog=true
+      - --accessLog.filePath=/traefik.log
+      - --accessLog.bufferingSize=100 # Configuring a buffer of 100 lines
+      - --accessLog.filters.statusCodes=400-499
+      - --providers.docker=true
+      - --providers.docker.endpoint=unix:///var/run/docker.sock
+      - --providers.docker.defaultrule=Host(`{{ index .Labels "com.docker.compose.service" }}.$DOMAIN`)
+      - --providers.docker.exposedByDefault=false
+      - --providers.docker.network=proxy
+      - --providers.docker.swarmMode=false
+      - --providers.file.directory=/rules # Load dynamic configuration from one or more .toml or .yml files in a directory.
+#      - --providers.file.filename=/path/to/file # Load dynamic configuration from a file.
+      - --providers.file.watch=true # Only works on top level files in the rules folder
+#      - --certificatesResolvers.digitalocean.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory # LetsEncrypt Staging Server - uncomment when testing
+      - --certificatesResolvers.digitalocean.acme.caServer=https://acme-v02.api.letsencrypt.org/directory
+      - --certificatesResolvers.digitalocean.acme.email=$EMAIL
+      - --certificatesResolvers.digitalocean.acme.storage=/acme.json
+      - --certificatesResolvers.digitalocean.acme.dnsChallenge.provider=digitalocean
     environment:
-      - DO_AUTH_TOKEN=${DO_AUTH_TOKEN}
+      - DO_AUTH_TOKEN=$DO_AUTH_TOKEN
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
-      - ./traefik/config.yml:/etc/traefik/config.yml:ro
-      - ./traefik/acme.json:/etc/traefik/acme.json
+      - ./traefik/rules:/rules
+      - ./traefik/traefik.log:/traefik.log
+      - ./traefik/acme/acme.json:/acme.json
+      - $DATA/shared:/shared
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=proxy"
-      # router
+      ## HTTP Routers
       - "traefik.http.routers.traefik-rtr.entrypoints=https"
       - "traefik.http.routers.traefik-rtr.rule=Host(`traefik.${DOMAIN}`)"
       - "traefik.http.routers.traefik-rtr.tls=true"
       - "traefik.http.routers.traefik-rtr.tls.certresolver=digitalocean"
-      - "traefik.http.routers.traefik-rtr.tls.domains[0].main=*.${DOMAIN}"
-      - "traefik.http.routers.traefik-rtr.tls.options=default"
-      # middlewares
-      - "traefik.http.routers.traefik-rtr.middlewares=secure-chain@file"
-      # service
+      - "traefik.http.routers.traefik-rtr.tls.domains[0].main=$DOMAIN"
+      - "traefik.http.routers.traefik-rtr.tls.domains[0].sans=*.$DOMAIN"
+      ## Middlewares
+      - "traefik.http.routers.traefik-rtr.middlewares=basic-auth@file" 
+      ## Services - API
       - "traefik.http.routers.traefik-rtr.service=api@internal"
 
 networks:

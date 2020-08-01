@@ -1,0 +1,7 @@
+# echo $(htpasswd -nb user password) | sed -e s/\\$/\\$\\$/g
+http:
+  middlewares:
+    basic-auth:
+      basicAuth:
+        realm: "Traefik Basic Auth"
+        usersFile: "/shared/.htpasswd"
