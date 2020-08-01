@@ -12,6 +12,7 @@ docker-install:
 
 setup:
 	# acme
+	mkdir $$DATA/traefik
 	mkdir $$DATA/traefik/acme
 	touch $$DATA/traefik/acme/acme.json
 	chmod 600 $$DATA/traefik/acme/acme.json
