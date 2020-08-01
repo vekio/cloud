@@ -26,8 +26,8 @@ setup:
 	
 
 traefik-up:
-	docker-compose -f yml-files/traefik.yml --env-file=.env up -d
+	docker-compose -f traefik.yml --env-file=.env up -d
 traefik-logs:
-	docker-compose -f yml-files/traefik.yml logs -f traefik
+	docker-compose -f traefik.yml logs -f traefik
 traefik-down:
-	docker-compose -f yml-files/traefik.yml down
+	docker-compose -f traefik.yml down
