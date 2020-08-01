@@ -11,8 +11,9 @@ docker-install:
 	sudo pip3 install docker-compose
 
 setup:
-	# acme
 	mkdir $$DATA/traefik
+	mkdir $$DATA/shared
+	# acme	
 	mkdir $$DATA/traefik/acme
 	touch $$DATA/traefik/acme/acme.json
 	chmod 600 $$DATA/traefik/acme/acme.json
@@ -22,7 +23,7 @@ setup:
 	docker network create proxy
 	# basic-auth (htpasswd)
 	sudo apt install -y apache2-utils
-	echo $(htpasswd -nb $$AUTH-USER $$AUTH-PASSWORD) | sed -e s/\\$/\\$\\$/g
+	echo $(htpasswd -nb $$AUTH-USER $$AUTH-PASSWORD) | sed -e s/\\$/\\$\\$/g > $$DATA/shared/.htpasswd
 	
 
 traefik-up:
