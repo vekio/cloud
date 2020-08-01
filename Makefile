@@ -1,3 +1,6 @@
+include .env
+export
+
 docker-install:
 	# install docker
 	curl -fsSL https://get.docker.com -o get-docker.sh
@@ -9,17 +12,17 @@ docker-install:
 
 setup:
 	# acme
-	mkdir traefik/acme
-	touch traefik/acme/acme.json
-	chmod 600 traefik/acme/acme.json
+	mkdir $$DATA/traefik/acme
+	touch $$DATA/traefik/acme/acme.json
+	chmod 600 $$DATA/traefik/acme/acme.json
 	# logs
-	touch traefik/traefik.log
+	touch $$DATA/traefik/traefik.log
 	# network
 	docker network create proxy
 	# basic-auth (htpasswd)
 	sudo apt install -y apache2-utils
-	# .env
-	cp .env_example .env
+	echo $(htpasswd -nb $$AUTH-USER $$AUTH-PASSWORD) | sed -e s/\\$/\\$\\$/g
+	
 
 traefik-up:
 	docker-compose -f yml-files/traefik.yml --env-file=.env up -d

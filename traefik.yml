@@ -48,8 +48,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik/rules:/rules
-      - ./traefik/traefik.log:/traefik.log
-      - ./traefik/acme/acme.json:/acme.json
+      - $DATA/traefik/traefik.log:/traefik.log
+      - $DATA/traefik/acme/acme.json:/acme.json
       - $DATA/shared:/shared
     labels:
       - "traefik.enable=true"
