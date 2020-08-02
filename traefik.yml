@@ -54,7 +54,7 @@ services:
       - "traefik.enable=true"
       ## HTTP Routers
       - "traefik.http.routers.traefik-rtr.entrypoints=https"
-      - "traefik.http.routers.traefik-rtr.rule=Host(`traefik.${DOMAIN}`)"
+      - "traefik.http.routers.traefik-rtr.rule=HostHeader(`traefik.${DOMAIN}`)"
       - "traefik.http.routers.traefik-rtr.tls=true"
       - "traefik.http.routers.traefik-rtr.tls.certresolver=digitalocean"
       - "traefik.http.routers.traefik-rtr.tls.domains[0].main=$DOMAIN"
