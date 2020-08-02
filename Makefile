@@ -75,3 +75,10 @@ traefik-logs:
 	docker-compose -f traefik.yml logs -f traefik
 traefik-down:
 	docker-compose -f traefik.yml down
+
+portainer-up:
+	docker-compose -f portainer.yml --env-file=.env up -d
+portainer-logs:
+	docker-compose -f portainer.yml logs -f portainer
+portainer-down:
+	docker-compose -f portainer.yml down
