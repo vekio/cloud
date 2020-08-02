@@ -13,10 +13,12 @@ services:
       - proxy
     command: -H unix:///var/run/docker.sock
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - $DATA/portainer/data:/data
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
       ## HTTP Routers
       - "traefik.http.routers.portainer-rtr.entrypoints=https"
       - "traefik.http.routers.portainer-rtr.rule=Host(`portainer.$DOMAIN`)"
