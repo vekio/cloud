@@ -12,10 +12,10 @@ docker-install:
 	sudo apt install -y libffi-dev libssl-dev python3 python3-pip
 	sudo pip3 install docker-compose
 
-all: docker-install traefik pihole
-	@echo "✅ All done"
+all: docker-install traefik-run pihole-run
+	@echo "✅ All done and running"
 
-pihole: pihole-install pihole-port
+pihole-run: pihole-install pihole-port
 	@echo "✅ Pi-hole install done"
 
 pihole-install:
@@ -42,7 +42,7 @@ pihole-up:
 pihole-upgrade: pihole-up pihole-port
 	@echo "✅ Pi-hole upgrade done"
 
-traefik: traefik-setup traefik-rules traefik-up
+traefik-run: traefik-setup traefik-rules traefik-up
 	@echo "✅ Traefik service running"
 
 traefik-setup:
@@ -96,3 +96,10 @@ duckdns-logs:
 	docker-compose -f duckdns.yml logs -f duckdns
 duckdns-down:
 	docker-compose -f duckdns.yml down
+
+wireguard-up:
+	docker-compose -f wireguard.yml --env-file=.env up -d
+wireguard-logs:
+	docker-compose -f wireguard.yml logs -f wireguard
+wireguard-down:
+	docker-compose -f wireguard.yml down
