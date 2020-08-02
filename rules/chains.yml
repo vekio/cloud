@@ -2,6 +2,7 @@ http:
   middlewares:
     secure-chain:
       chain:
-        - secure-headers
-        - basic-auth
-        - rate-limit
+        middlewares:
+          - secure-headers
+          - basic-auth
+          - rate-limit
