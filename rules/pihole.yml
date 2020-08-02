@@ -2,7 +2,7 @@ http:
 
   routers:
     pihole:
-        rule: "HostHeader(`pihole.DOMAIN`)"
+        rule: Host(`pihole.DOMAIN`)
         entryPoints:
           - https
         middlewares:
