@@ -2,7 +2,7 @@ http:
 
   routers:
     pihole:
-        rule: Host(`pihole.DOMAIN`)
+        rule: "HostHeader(`pihole.DOMAIN`)"
         entryPoints:
           - https
         middlewares:
@@ -10,6 +10,7 @@ http:
           - pihole-admin
         service: pihole
         tls:
+          certResolver: digitalocean
           domains:
             - main: "DOMAIN"
               sans: 
