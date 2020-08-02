@@ -13,11 +13,13 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ${DATA}/bitwarden:/data
     environment:
-      - SIGNUPS_ALLOWED=false                  # Change to false after first login
-      - ADMIN_TOKEN=${BITWARDEN_ADMIN_TOKEN}  # Generate key with: openssl rand -base64 48
+      - SIGNUPS_ALLOWED=true                  # Change to false after first login
+      - INVITATIONS_ALLOWED=true              # Send invitation using admin page
       - WEBSOCKET_ENABLED=true
+      - ADMIN_TOKEN=${BITWARDEN_ADMIN_TOKEN}  # Generate key with: openssl rand -base64 48
       - LOG_FILE=/data/bitwarden.log
       - LOG_LEVEL=warn
+      - DOMAIN=https://vault.$DOMAIN
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
@@ -32,7 +34,7 @@ services:
       - "traefik.http.routers.bitwarden-rtr.tls.domains[0].sans=*.$DOMAIN"
       - "traefik.http.routers.bitwarden-rtr.tls.options=default"
       ## Middlewares
-      - "traefik.http.routers.bitwarden-rtr.middlewares=secure-chain@file"
+      - "traefik.http.routers.bitwarden-rtr.middlewares=no-auth-chain@file"
       ## Services
       - "traefik.http.routers.bitwarden-rtr.service=bitwarden-svc"
       - "traefik.http.services.bitwarden-svc.loadbalancer.server.port=80"
@@ -67,4 +69,3 @@ services:
 networks:
   proxy:
     external: true
-
