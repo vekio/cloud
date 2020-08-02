@@ -82,3 +82,10 @@ portainer-logs:
 	docker-compose -f portainer.yml logs -f portainer
 portainer-down:
 	docker-compose -f portainer.yml down
+
+bitwarden-up:
+	docker-compose -f bitwarden.yml --env-file=.env up -d
+bitwarden-logs:
+	docker-compose -f bitwarden.yml logs -f bitwarden
+bitwarden-down:
+	docker-compose -f bitwarden.yml down
