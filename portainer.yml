@@ -27,7 +27,7 @@ services:
       - "traefik.http.routers.portainer-rtr.tls.domains[0].main=$DOMAIN"
       - "traefik.http.routers.portainer-rtr.tls.domains[0].sans=*.$DOMAIN"
       ## Middlewares
-      - "traefik.http.routers.portainer-rtr.middlewares=secure-chain@file"
+      - "traefik.http.routers.portainer-rtr.middlewares=no-auth-chain@file"
       ## Services
       - "traefik.http.routers.portainer-rtr.service=portainer-svc"
       - "traefik.http.services.portainer-svc.loadbalancer.server.port=9000"
