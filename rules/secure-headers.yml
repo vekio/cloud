@@ -7,28 +7,25 @@ http:
           - GET
           - OPTIONS
           - PUT
-        accessControlAllowOrigin: https://DOMAIN
         accessControlMaxAge: 100
-        addVaryHeader: true
-        allowedHosts:
-          - treafik.DOMAIN
         hostsProxyHeaders:
-          - X-Forwarded-Host
+          - "X-Forwarded-Host"
         sslRedirect: true
-        sslHost: traefik.DOMAIN
-        sslforcehost: true
-        sslProxyHeaders:
-          X-Forwarded-Proto: https
+        # sslForceHost: true # add sslHost to all of the services
+        # sslHost: "example.com"
         stsSeconds: 63072000
         stsIncludeSubdomains: true
         stsPreload: true
         forceSTSHeader: true
-        frameDeny: true
-      #  customFrameOptionsValue: allow-from https:DOMAIN # This option overrides FrameDeny
+        # frameDeny: true # overwritten by customFrameOptionsValue
+        customFrameOptionsValue: "allow-from https:DOMAIN" # this option overrides FrameDeny
         contentTypeNosniff: true
         browserXssFilter: true
-      #  contentSecurityPolicy: default-src 'self'; frame-ancestors 'none'; script-src 'none'; object-src 'none'; base-uri 'none';
-        referrerPolicy: same-origin
-        featurePolicy: camera 'none'; geolocation 'none'; microphone 'none'; payment 'none'; usb 'none'; vr 'none';
-        customRequestHeaders:
-          X-Robots-Tag: none,noarchive,nosnippet,notranslate,noimageindex,
+        # Setting contentSecurityPolicy is more secure but it can break things. Proper auth will reduce the risk.
+        # the below line also breaks some apps due to 'none' - sonarr, radarr, etc.
+        # contentSecurityPolicy: "frame-ancestors '*.DOMAIN:*';object-src 'none';script-src 'none';"
+        referrerPolicy: "same-origin"
+        featurePolicy: "camera 'none'; geolocation 'none'; microphone 'none'; payment 'none'; usb 'none'; vr 'none';"
+        customResponseHeaders:
+          X-Robots-Tag: "none,noarchive,nosnippet,notranslate,noimageindex,"
+          server: ""
