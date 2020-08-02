@@ -10,6 +10,7 @@ http:
           - pihole-admin
         service: pihole
         tls:
+          certResolver: digitalocean
           domains:
             - main: "DOMAIN"
               sans: 
