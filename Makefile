@@ -89,3 +89,10 @@ bitwarden-logs:
 	docker-compose -f bitwarden.yml logs -f bitwarden
 bitwarden-down:
 	docker-compose -f bitwarden.yml down
+
+duckdns-up:
+	docker-compose -f duckdns.yml --env-file=.env up -d
+duckdns-logs:
+	docker-compose -f duckdns.yml logs -f duckdns
+duckdns-down:
+	docker-compose -f duckdns.yml down

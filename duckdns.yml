@@ -5,7 +5,7 @@ services:
   # https://hub.docker.com/r/linuxserver/duckdns
   #   
   # Change the frequency with which the server sends the IP to Duck DNS
-  #   docker exec -it cloud_duckdns /bin/bash
+  #   docker exec -it PROJECT_NAME_duckdns /bin/bash
   #   crontab -e -u abc
   #
   duckdns:
@@ -15,7 +15,9 @@ services:
     volumes:
       - $DATA/duckdns:/config
     environment:
+      - PUID=$PUID #optional
+      - PGID=$PGID #optional
       - TZ=$TZ
       - SUBDOMAINS=$DUCKDNS_SUBDOMAIN
       - TOKEN=$DUCKDNS_TOKEN
-      - LOG_FILE=true
+      - LOG_FILE=true #optional
