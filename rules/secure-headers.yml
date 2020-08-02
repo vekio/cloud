@@ -1,0 +1,34 @@
+# https://docs.traefik.io/middlewares/headers/
+http:
+  middlewares:
+    secure-headers:
+      headers:
+        accessControlAllowMethods:
+          - GET
+          - OPTIONS
+          - PUT
+        accessControlAllowOrigin: https://DOMAIN
+        accessControlMaxAge: 100
+        addVaryHeader: true
+        allowedHosts:
+          - treafik.DOMAIN
+        hostsProxyHeaders:
+          - X-Forwarded-Host
+        sslRedirect: true
+        sslHost: traefik.DOMAIN
+        sslforcehost: true
+        sslProxyHeaders:
+          X-Forwarded-Proto: https
+        stsSeconds: 63072000
+        stsIncludeSubdomains: true
+        stsPreload: true
+        forceSTSHeader: true
+        frameDeny: true
+      #  customFrameOptionsValue: allow-from https:DOMAIN # This option overrides FrameDeny
+        contentTypeNosniff: true
+        browserXssFilter: true
+      #  contentSecurityPolicy: default-src 'self'; frame-ancestors 'none'; script-src 'none'; object-src 'none'; base-uri 'none';
+        referrerPolicy: same-origin
+        featurePolicy: camera 'none'; geolocation 'none'; microphone 'none'; payment 'none'; usb 'none'; vr 'none';
+        customRequestHeaders:
+          X-Robots-Tag: none,noarchive,nosnippet,notranslate,noimageindex,

@@ -36,7 +36,7 @@ pihole-port:
 	@sudo service lighttpd restart
 
 pihole-rule:
-	# edit traefik rule
+	# edit traefik pihole rule
 	@sed -i "s/DOMAIN/$$DOMAIN/g" $$DATA/traefik/rules/pihole.yml
 	@sed -i "s/PIHOLEIP/$$PIHOLEIP/g" $$DATA/traefik/rules/pihole.yml
 
@@ -47,7 +47,7 @@ pihole-up:
 pihole-upgrade: pihole-up pihole-port
 	@echo "✅ Pi-hole upgrade done"
 
-traefik: traefik-setup traefik-up
+traefik: traefik-setup traefik-headers traefik-up
 	@echo "✅ Traefik service running"
 
 traefik-setup:
@@ -66,6 +66,10 @@ traefik-setup:
 	# basic-auth (htpasswd)
 	@sudo apt install -y apache2-utils
 	@htpasswd -nb $$AUTH_USER $$AUTH_PASSWORD > $$DATA/shared/.htpasswd
+
+traefik-headers:
+	# edit traefik secure-headers
+	@sed -i "s/DOMAIN/$$DOMAIN/g" $$DATA/traefik/rules/secure-headers.yml
 
 traefik-up:
 	docker-compose -f traefik.yml --env-file=.env up -d
