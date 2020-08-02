@@ -6,3 +6,8 @@ http:
           - secure-headers
           - basic-auth
           - rate-limit
+    no-auth-chain:
+      chain:
+        middlewares:
+          - secure-headers
+          - rate-limit

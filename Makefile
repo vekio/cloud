@@ -15,7 +15,7 @@ docker-install:
 all: docker-install traefik pihole
 	@echo "✅ All done"
 
-pihole: pihole-install pihole-port pihole-rule
+pihole: pihole-install pihole-port
 	@echo "✅ Pi-hole install done"
 
 pihole-install:
@@ -35,11 +35,6 @@ pihole-port:
 	@sudo sed -i 's/80/8080/g' /etc/lighttpd/lighttpd.conf
 	@sudo service lighttpd restart
 
-pihole-rule:
-	# edit traefik pihole rule
-	@sed -i "s/DOMAIN/$$DOMAIN/g" $$DATA/traefik/rules/pihole.yml
-	@sed -i "s/PIHOLEIP/$$PIHOLEIP/g" $$DATA/traefik/rules/pihole.yml
-
 pihole-up:
 	# update pihole
 	pihole -up
@@ -47,14 +42,12 @@ pihole-up:
 pihole-upgrade: pihole-up pihole-port
 	@echo "✅ Pi-hole upgrade done"
 
-traefik: traefik-setup traefik-headers traefik-up
+traefik: traefik-setup traefik-rules traefik-up
 	@echo "✅ Traefik service running"
 
 traefik-setup:
 	@mkdir -p $$DATA/shared
-	@mkdir -p $$DATA/traefik/
-	# rules
-	@cp -r rules $$DATA/traefik/
+	@mkdir -p $$DATA/traefik/	
 	# acme	
 	@mkdir -p $$DATA/traefik/acme
 	@touch $$DATA/traefik/acme/acme.json
@@ -67,9 +60,14 @@ traefik-setup:
 	@sudo apt install -y apache2-utils
 	@htpasswd -nb $$AUTH_USER $$AUTH_PASSWORD > $$DATA/shared/.htpasswd
 
-traefik-headers:
-	# edit traefik secure-headers
+traefik-rules:
+	# rules
+	@cp -r rules $$DATA/traefik/
+	# edit rule secure-headers
 	@sed -i "s/DOMAIN/$$DOMAIN/g" $$DATA/traefik/rules/secure-headers.yml
+	# edit rule pihole
+	@sed -i "s/DOMAIN/$$DOMAIN/g" $$DATA/traefik/rules/pihole.yml
+	@sed -i "s/PIHOLEIP/$$PIHOLEIP/g" $$DATA/traefik/rules/pihole.yml
 
 traefik-up:
 	docker-compose -f traefik.yml --env-file=.env up -d
