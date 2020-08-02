@@ -1,4 +1,4 @@
-version: "2.1"
+version: "3.7"
 
 services:
   ## Wireguard - VPN
@@ -13,9 +13,9 @@ services:
       - NET_ADMIN
       - SYS_MODULE
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/London
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
       - SERVERURL=${DUCKDNS_SUBDOMAIN}.duckdns.org #optional
       - SERVERPORT=51820 #optional
       - PEERS=4 #optional
@@ -26,4 +26,3 @@ services:
       - /lib/modules:/lib/modules
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
-    
