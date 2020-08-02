@@ -1,0 +1,70 @@
+version: "3.7"
+
+services:
+  ## Bitwarden - Password Vault
+  # https://hub.docker.com/r/bitwardenrs/server
+  bitwarden:
+    image: bitwardenrs/server:${BITWARDEN_VERSION:-latest}
+    container_name: ${PROJECT_NAME}_bitwarden
+    restart: unless-stopped
+    networks:
+      - proxy
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DATA}/bitwarden:/data
+    environment:
+      - SIGNUPS_ALLOWED=false                  # Change to false after first login
+      - ADMIN_TOKEN=${BITWARDEN_ADMIN_TOKEN}  # Generate key with: openssl rand -base64 48
+      - WEBSOCKET_ENABLED=true
+      - LOG_FILE=/data/bitwarden.log
+      - LOG_LEVEL=warn
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      ## Bitwarden Web UI
+      ## HTTP Routers
+      - "traefik.http.routers.bitwarden-rtr.entrypoints=https"
+      - "traefik.http.routers.bitwarden-rtr.rule=Host(`vault.${DOMAIN}`)"
+      - "traefik.http.routers.bitwarden-rtr.priority=1"
+      - "traefik.http.routers.bitwarden-rtr.tls=true"
+      - "traefik.http.routers.bitwarden-rtr.tls.certresolver=digitalocean"
+      - "traefik.http.routers.bitwarden-rtr.tls.domains[0].main=$DOMAIN"
+      - "traefik.http.routers.bitwarden-rtr.tls.domains[0].sans=*.$DOMAIN"
+      - "traefik.http.routers.bitwarden-rtr.tls.options=default"
+      ## Middlewares
+      - "traefik.http.routers.bitwarden-rtr.middlewares=secure-chain@file"
+      ## Services
+      - "traefik.http.routers.bitwarden-rtr.service=bitwarden-svc"
+      - "traefik.http.services.bitwarden-svc.loadbalancer.server.port=80"
+      ## Bitwarden WebSocket Notifications Hub
+      ## HTTP Routers
+      - "traefik.http.routers.bitwardenHub-rtr.entrypoints=https"
+      - "traefik.http.routers.bitwardenHub-rtr.rule=(Host(`vault.${DOMAIN}`) && Path(`/notifications/hub`))"
+      - "traefik.http.routers.bitwardenHub-rtr.priority=2"
+      - "traefik.http.routers.bitwardenHub-rtr.tls=true"
+      - "traefik.http.routers.bitwardenHub-rtr.tls.certresolver=digitalocean"
+      - "traefik.http.routers.bitwardenHub-rtr.tls.domains[0].main=$DOMAIN"
+      - "traefik.http.routers.bitwardenHub-rtr.tls.domains[0].sans=*.$DOMAIN"
+      - "traefik.http.routers.bitwardenHub-rtr.tls.options=default"
+      - "traefik.http.routers.bitwardenHub-rtr.service=bitwardenHub-svc"
+      ## Services
+      - "traefik.http.services.bitwardenHub-svc.loadbalancer.server.port=3012"
+      ## Bitwarden Admin Page
+      ## HTTP Routers
+      - "traefik.http.routers.bitwardenAdmin-rtr.entrypoints=https"
+      - "traefik.http.routers.bitwardenAdmin-rtr.rule=(Host(`vault.${DOMAIN}`) && Path(`/admin`))"
+      - "traefik.http.routers.bitwardenAdmin-rtr.priority=3"
+      - "traefik.http.routers.bitwardenAdmin-rtr.tls=true"
+      - "traefik.http.routers.bitwardenAdmin-rtr.tls.certresolver=digitalocean"
+      - "traefik.http.routers.bitwardenAdmin-rtr.tls.domains[0].main=$DOMAIN"
+      - "traefik.http.routers.bitwardenAdmin-rtr.tls.domains[0].sans=*.$DOMAIN"
+      - "traefik.http.routers.bitwardenAdmin-rtr.tls.options=default"
+      ## Middlewares
+      - "traefik.http.routers.bitwardenAdmin-rtr.middlewares=secure-chain@file"
+      ## Services
+      - "traefik.http.routers.bitwardenAdmin-rtr.service=bitwarden-svc"
+
+networks:
+  proxy:
+    external: true
+

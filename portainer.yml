@@ -15,7 +15,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - $DATA/portainer/data:/data
+      - $DATA/portainer:/data
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
@@ -28,7 +28,7 @@ services:
       - "traefik.http.routers.portainer-rtr.tls.domains[0].sans=*.$DOMAIN"
       ## Middlewares
       - "traefik.http.routers.portainer-rtr.middlewares=secure-chain@file"
-      ## HTTP Services
+      ## Services
       - "traefik.http.routers.portainer-rtr.service=portainer-svc"
       - "traefik.http.services.portainer-svc.loadbalancer.server.port=9000"
 
