@@ -101,9 +101,9 @@ duckdns-logs:
 duckdns-down:
 	docker-compose -f duckdns.yml down
 
-wireguard-up:
-	docker-compose -f wireguard.yml --env-file=.env up -d
-wireguard-logs:
-	docker-compose -f wireguard.yml logs -f wireguard
-wireguard-down:
-	docker-compose -f wireguard.yml down
+bookstack-up:
+	docker-compose -f bookstack.yml --env-file=.env up -d
+bookstack-logs:
+	docker-compose -f bookstack.yml logs -f bookstack
+bookstack-down:
+	docker-compose -f bookstack.yml down
