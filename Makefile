@@ -12,6 +12,10 @@ docker-install:
 	sudo apt install -y libffi-dev libssl-dev python3 python3-pip
 	sudo pip3 install docker-compose
 
+pivpn-install:
+	@echo "⌛ Installing PiVPN ..."
+	curl -L https://install.pivpn.io | bash
+
 all: docker-install traefik-run pihole-run
 	@echo "✅ All done and running"
 
