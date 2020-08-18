@@ -100,10 +100,3 @@ duckdns-logs:
 	docker-compose -f duckdns.yml logs -f duckdns
 duckdns-down:
 	docker-compose -f duckdns.yml down
-
-bookstack-up:
-	docker-compose -f bookstack.yml --env-file=.env up -d
-bookstack-logs:
-	docker-compose -f bookstack.yml logs -f bookstack
-bookstack-down:
-	docker-compose -f bookstack.yml down
