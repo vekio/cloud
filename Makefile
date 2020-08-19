@@ -16,7 +16,7 @@ pivpn-install:
 	@echo "⌛ Installing PiVPN ..."
 	curl -L https://install.pivpn.io | bash
 
-all: docker-install traefik-run pihole-run
+all: docker-install traefik-run pihole-run pivpn-install
 	@echo "✅ All done and running"
 
 pihole-run: pihole-install pihole-port
