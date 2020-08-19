@@ -1,33 +1,33 @@
 include .env
 export
 
+all: docker pihole pivpn traefik
+	@echo "✅ all up and running"
+
+docker: docker-install docker-setup
+	@echo "✅ docker up and running"
+
 docker-install:
-	# install docker
-	@echo "⌛ Installing Docker ..."
+	@echo "⌛ install docker ..."
 	@curl -fsSL https://get.docker.com -o get-docker.sh
 	sudo sh get-docker.sh
 	@sudo usermod -aG docker pi
-	# install docker-compose from python3-pip
-	@echo "⌛ Installing Docker-compose ..."
+	@echo "⌛ install docker-compose from pip3 ..."
 	sudo apt install -y libffi-dev libssl-dev python3 python3-pip
 	sudo pip3 install docker-compose
 
-pivpn-install:
-	@echo "⌛ Installing PiVPN ..."
-	curl -L https://install.pivpn.io | bash
+docker-setup:
+	@echo "⌛ setup docker folder ..."
+	@sudo setfacl -Rdm g:docker:rwx $$DOCKER
+	@sudo chmod -R 775 $$DOCKER
 
-all: docker-install traefik-run pihole-run pivpn-install
-	@echo "✅ All done and running"
-
-pihole-run: pihole-install pihole-port
-	@echo "✅ Pi-hole install done"
+pihole: pihole-install pihole-port
+	@echo "✅ pi-hole up and running"
 
 pihole-install:
-	# pihole install
-	@echo "⌛ Installing Pi-hole ..."
+	@echo "⌛ install pi-hole ..."
 	curl -sSL https://install.pi-hole.net | bash
-	# unbound install
-	@echo "⌛ Installing Unbound ..."
+	@echo "⌛ install unbound ..."
 	sudo apt install -y unbound
 	@wget -O root.hints https://www.internic.net/domain/named.root
 	@sudo mv root.hints /var/lib/unbound/
@@ -35,43 +35,47 @@ pihole-install:
 	sudo service unbound start
 
 pihole-port:
-	# change pihole default port to 8080
+	@echo "⌛ change pi-hole web panel port ..."
 	@sudo sed -i 's/80/8080/g' /etc/lighttpd/lighttpd.conf
 	@sudo service lighttpd restart
 
 pihole-up:
-	# update pihole
 	pihole -up
 
-pihole-upgrade: pihole-up pihole-port
-	@echo "✅ Pi-hole upgrade done"
+pihole-update: pihole-up pihole-port
+	@echo "✅ pi-hole update done"
 
-traefik-run: traefik-setup traefik-rules traefik-up
-	@echo "✅ Traefik service running"
+pivpn: pivpn-install
+	@echo "✅ pivpn up and running"
+
+pivpn-install:
+	@echo "⌛ install PiVPN ..."
+	curl -L https://install.pivpn.io | bash
+
+traefik: traefik-setup traefik-rules traefik-up
+	@echo "✅ traefik up and running"
 
 traefik-setup:
-	@mkdir -p $$DATA/shared
-	@mkdir -p $$DATA/traefik/	
-	# acme	
-	@mkdir -p $$DATA/traefik/acme
-	@touch $$DATA/traefik/acme/acme.json
-	@chmod 600 $$DATA/traefik/acme/acme.json
-	# logs
-	@touch $$DATA/traefik/traefik.log
-	# network
+	@echo "⌛ create traefik folders ..."
+	@mkdir -p $$DOCKER/shared
+	@mkdir -p $$DOCKER/traefik/
+	@mkdir -p $$DOCKER/traefik/acme
+	@touch $$DOCKER/traefik/acme/acme.json
+	@chmod 600 $$DOCKER/traefik/acme/acme.json
+	@touch $$DOCKER/traefik/traefik.log
+	@echo "⌛ docker network create proxy ..."
 	@docker network create proxy
-	# basic-auth (htpasswd)
+	@echo "⌛ create auth credentials ..."
 	@sudo apt install -y apache2-utils
-	@htpasswd -nb $$AUTH_USER $$AUTH_PASSWORD > $$DATA/shared/.htpasswd
+	@htpasswd -nb $$AUTH_USER $$AUTH_PASSWORD > $$DOCKER/shared/.htpasswd
 
 traefik-rules:
-	# rules
-	@cp -r rules $$DATA/traefik/
-	# edit rule secure-headers
-	@sed -i "s/DOMAIN/$$DOMAIN/g" $$DATA/traefik/rules/secure-headers.yml
-	# edit rule pihole
-	@sed -i "s/DOMAIN/$$DOMAIN/g" $$DATA/traefik/rules/pihole.yml
-	@sed -i "s/PIHOLEIP/$$PIHOLEIP/g" $$DATA/traefik/rules/pihole.yml
+	@echo "⌛ copy traefik rules ..."
+	@cp -r rules $$DOCKER/traefik/
+	@echo "⌛ edit traefik rules ..."
+	@sed -i "s/DOMAIN/$$DOMAIN/g" $$DOCKER/traefik/rules/secure-headers.yml
+	@sed -i "s/DOMAIN/$$DOMAIN/g" $$DOCKER/traefik/rules/pihole.yml
+	@sed -i "s/PIHOLEIP/$$PIHOLEIP/g" $$DOCKER/traefik/rules/pihole.yml
 
 traefik-up:
 	docker-compose -f traefik.yml --env-file=.env up -d
