@@ -100,3 +100,10 @@ duckdns-logs:
 	docker-compose -f duckdns.yml logs -f duckdns
 duckdns-down:
 	docker-compose -f duckdns.yml down
+
+jellyfin-up:
+	docker-compose -f jellyfin.yml --env-file=.env up -d
+jellyfin-logs:
+	docker-compose -f jellyfin.yml logs -f jellyfin
+jellyfin-down:
+	docker-compose -f jellyfin.yml down

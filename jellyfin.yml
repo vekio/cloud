@@ -1,0 +1,48 @@
+version: "3.7"
+
+services:
+  ## Jellyfin - Media Server
+  # https://hub.docker.com/r/linuxserver/jellyfin
+  jellyfin:
+    image: linuxserver/jellyfin:${JELLYFIN_VERSION:-latest}
+    container_name: ${PROJECT_NAME}_jellyfin
+    hostname: jellyfin
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - proxy
+    devices:
+      - /dev/vcsm:/dev/vcsm
+      - /dev/vchiq:/dev/vchiq
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+    volumes:
+      - /opt/vc/lib:/opt/vc/lib
+      - $DOCKER/jellyfin/config:/config
+      - $DOCKER/jellyfin/cache:/cache
+      # media
+      - $MEDIA/films:/films:ro
+      - $MEDIA/tvshows:/tvshows:ro
+      - $MEDIA/music:/music:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      ## HTTP Routers
+      - "traefik.http.routers.jellyfin-rtr.entrypoints=https"
+      - "traefik.http.routers.jellyfin-rtr.rule=Host(`media.$DOMAIN`)"
+      - "traefik.http.routers.jellyfin-rtr.tls=true"
+      - "traefik.http.routers.jellyfin-rtr.tls.certresolver=digitalocean"
+      - "traefik.http.routers.jellyfin-rtr.tls.domains[0].main=$DOMAIN"
+      - "traefik.http.routers.jellyfin-rtr.tls.domains[0].sans=*.$DOMAIN"
+      ## Middlewares
+      - "traefik.http.routers.jellyfin-rtr.middlewares=no-auth-chain@file"
+      ## Services
+      - "traefik.http.routers.jellyfin-rtr.service=jellyfin-svc"
+      - "traefik.http.services.jellyfin-svc.loadbalancer.server.port=8096"
+
+networks:
+  proxy:
+    external: true
