@@ -6,12 +6,13 @@ services:
   bitwarden:
     image: bitwardenrs/server:${BITWARDEN_VERSION:-latest}
     container_name: ${PROJECT_NAME}_bitwarden
+    hostname: bitwarden
     restart: unless-stopped
     networks:
       - proxy
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${DATA}/bitwarden:/data
+      - $DOCKER/bitwarden:/data
     environment:
       - SIGNUPS_ALLOWED=true                  # Change to false after first login
       - INVITATIONS_ALLOWED=true              # Send invitation using admin page
@@ -26,7 +27,7 @@ services:
       ## Bitwarden Web UI
       ## HTTP Routers
       - "traefik.http.routers.bitwarden-rtr.entrypoints=https"
-      - "traefik.http.routers.bitwarden-rtr.rule=Host(`vault.${DOMAIN}`)"
+      - "traefik.http.routers.bitwarden-rtr.rule=Host(`vault.$DOMAIN`)"
       - "traefik.http.routers.bitwarden-rtr.priority=1"
       - "traefik.http.routers.bitwarden-rtr.tls=true"
       - "traefik.http.routers.bitwarden-rtr.tls.certresolver=digitalocean"
@@ -41,7 +42,7 @@ services:
       ## Bitwarden WebSocket Notifications Hub
       ## HTTP Routers
       - "traefik.http.routers.bitwardenHub-rtr.entrypoints=https"
-      - "traefik.http.routers.bitwardenHub-rtr.rule=(Host(`vault.${DOMAIN}`) && Path(`/notifications/hub`))"
+      - "traefik.http.routers.bitwardenHub-rtr.rule=(Host(`vault.$DOMAIN`) && Path(`/notifications/hub`))"
       - "traefik.http.routers.bitwardenHub-rtr.priority=2"
       - "traefik.http.routers.bitwardenHub-rtr.tls=true"
       - "traefik.http.routers.bitwardenHub-rtr.tls.certresolver=digitalocean"
@@ -54,7 +55,7 @@ services:
       ## Bitwarden Admin Page
       ## HTTP Routers
       - "traefik.http.routers.bitwardenAdmin-rtr.entrypoints=https"
-      - "traefik.http.routers.bitwardenAdmin-rtr.rule=(Host(`vault.${DOMAIN}`) && Path(`/admin`))"
+      - "traefik.http.routers.bitwardenAdmin-rtr.rule=(Host(`vault.$DOMAIN`) && Path(`/admin`))"
       - "traefik.http.routers.bitwardenAdmin-rtr.priority=3"
       - "traefik.http.routers.bitwardenAdmin-rtr.tls=true"
       - "traefik.http.routers.bitwardenAdmin-rtr.tls.certresolver=digitalocean"
