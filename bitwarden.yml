@@ -8,6 +8,8 @@ services:
     container_name: ${PROJECT_NAME}_bitwarden
     hostname: bitwarden
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     networks:
       - proxy
     volumes:
