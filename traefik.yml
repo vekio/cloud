@@ -6,6 +6,7 @@ services:
   traefik:
     image: traefik:${TRAEFIK_VERSION:-latest}
     container_name: ${PROJECT_NAME}_traefik
+    hostname: traefik
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -46,10 +47,10 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - $DATA/traefik/rules:/rules
-      - $DATA/traefik/traefik.log:/traefik.log
-      - $DATA/traefik/acme/acme.json:/acme.json
-      - $DATA/shared:/shared
+      - $DOCKER/traefik/rules:/rules
+      - $DOCKER/traefik/traefik.log:/traefik.log
+      - $DOCKER/traefik/acme/acme.json:/acme.json
+      - $DOCKER/shared:/shared
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"

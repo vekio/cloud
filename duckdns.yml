@@ -11,13 +11,14 @@ services:
   duckdns:
     image: linuxserver/duckdns:${DUCKDNS_VERSION:-latest}
     container_name: ${PROJECT_NAME}_duckdns
+    hostname: duckdns
     restart: unless-stopped
     volumes:
       - $DATA/duckdns:/config
     environment:
-      - PUID=$PUID #optional
-      - PGID=$PGID #optional
+      - PUID=$PUID
+      - PGID=$PGID
       - TZ=$TZ
       - SUBDOMAINS=$DUCKDNS_SUBDOMAIN
       - TOKEN=$DUCKDNS_TOKEN
-      - LOG_FILE=true #optional
+      - LOG_FILE=true

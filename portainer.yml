@@ -6,6 +6,7 @@ services:
   portainer:
     image: portainer/portainer:${PORTAINER_VERSION:-latest}
     container_name: ${PROJECT_NAME}_portainer
+    hostname: portainer
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -15,7 +16,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - $DATA/portainer:/data
+      - $DOCKER/portainer:/data
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
