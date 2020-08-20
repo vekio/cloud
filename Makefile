@@ -1,7 +1,7 @@
 include .env
 export
 
-all: docker pihole pivpn traefik
+all: docker pihole pivpn traefik postgres
 	@echo "✅ all up and running"
 
 docker: docker-install docker-setup
@@ -111,3 +111,17 @@ jellyfin-logs:
 	docker-compose -f jellyfin.yml logs -f jellyfin
 jellyfin-down:
 	docker-compose -f jellyfin.yml down
+
+postgres: postgres-network postgres-up
+	@echo "✅ postgres up and running"
+
+postgres-network:
+	@echo "⌛ docker network create db ..."
+	@docker network create db
+
+postgres-up:
+	docker-compose -f postgres.yml --env-file=.env up -d
+postgres-logs:
+	docker-compose -f postgres.yml logs -f postgres
+postgres-down:
+	docker-compose -f postgres.yml down
