@@ -2,7 +2,10 @@ version: '3.7'
 
 services:
   ## Traefik - Reverse Proxy
-  # https://hub.docker.com/_/traefik 
+  # https://hub.docker.com/_/traefik
+  #
+  ## Create external traefik network:
+  #   docker network create proxy
   traefik:
     image: traefik:${TRAEFIK_VERSION:-latest}
     container_name: ${PROJECT_NAME}_traefik
@@ -23,7 +26,7 @@ services:
       - --entryPoints.https.address=:443
       - --api=true
       - --log=true
-      - --log.level=DEBUG # (Default: error) DEBUG, INFO, WARN, ERROR, FATAL, PANIC
+      - --log.level=ERROR # (Default: error) DEBUG, INFO, WARN, ERROR, FATAL, PANIC
       - --accessLog=true
       - --accessLog.filePath=/traefik.log
       - --accessLog.bufferingSize=100 # Configuring a buffer of 100 lines
