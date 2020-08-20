@@ -20,6 +20,7 @@ services:
       - PGID=$PGID
       - TZ=$TZ
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - /opt/vc/lib:/opt/vc/lib
       - $DOCKER/jellyfin/config:/config
       - $DOCKER/jellyfin/cache:/cache
