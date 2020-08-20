@@ -2,7 +2,10 @@ version: '3.7'
 
 services:
   ## Traefik - Reverse Proxy
-  # https://hub.docker.com/_/traefik 
+  # https://hub.docker.com/_/traefik
+  #
+  ## Create external traefik network:
+  #   docker network create proxy
   traefik:
     image: traefik:${TRAEFIK_VERSION:-latest}
     container_name: ${PROJECT_NAME}_traefik
