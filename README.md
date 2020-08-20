@@ -1,10 +1,10 @@
 # cloud
-Services and files running on my own cloud (actually using a raspberrypi 4 4GB)
+scripts and docker-compose files for my own cloud (actually a raspberrypi4 4GB)
 
 ## Services
 - Traefik - Reverse Proxy
 - Pi-hole - Ad-blocker and DNS Server
-- PiVPN (wireguard config)
+- PiVPN (wireguard config) - VPN
 - Duckdns (isolated) for the dynamic ip
 - Bitwarden - Password Vault
 - Jellyfin - Media Server
