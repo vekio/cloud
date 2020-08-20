@@ -16,11 +16,10 @@ services:
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_MULTIPLE_DATABASES=freshrss
-      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-admin}
     volumes:
-      - ../docker-postgresql-multiple-databases:/docker-entrypoint-initdb.d
+      - ./databases:/docker-entrypoint-initdb.d
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $DOCKER/postgres:/var/lib/postgresql/data

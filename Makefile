@@ -125,3 +125,10 @@ postgres-logs:
 	docker-compose -f postgres.yml logs -f postgres
 postgres-down:
 	docker-compose -f postgres.yml down
+
+freshrss-up:
+	docker-compose -f freshrss.yml --env-file=.env up -d
+freshrss-logs:
+	docker-compose -f freshrss.yml logs -f freshrss
+freshrss-down:
+	docker-compose -f freshrss.yml down

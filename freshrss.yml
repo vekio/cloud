@@ -1,7 +1,7 @@
 version: "3.7"
 
 services:
-  ## FreshRSS
+  ## FreshRSS - RSS Feed Aggregator
   # https://hub.docker.com/r/linuxserver/freshrss
   freshrss:
     image: linuxserver/freshrss:${FRESHRSS_VERSION:-latest}
@@ -23,9 +23,14 @@ services:
       - TZ=$TZ
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
       ## HTTP Routers
       - "traefik.http.routers.freshrss-rtr.entrypoints=https"
-      - "traefik.http.routers.freshrss-rtr.rule=Host(`freshrss.$DOMAIN`)"
+      - "traefik.http.routers.freshrss-rtr.rule=Host(`rss.$DOMAIN`)"
+      - "traefik.http.routers.freshrss-rtr.tls=true"
+      - "traefik.http.routers.freshrss-rtr.tls.certresolver=digitalocean"
+      - "traefik.http.routers.freshrss-rtr.tls.domains[0].main=$DOMAIN"
+      - "traefik.http.routers.freshrss-rtr.tls.domains[0].sans=*.$DOMAIN"
       ## Middlewares
       - "traefik.http.routers.freshrss-rtr.middlewares=secure-headers@file"
       ## HTTP Services
