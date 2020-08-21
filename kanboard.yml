@@ -1,0 +1,46 @@
+version: "3.7"
+
+services:
+  ## Kanboard - Kanban Project Management
+  # https://hub.docker.com/r/kanboard/kanboard
+  freshrss:
+    image: kanboard/kanboard:${KANBOARD_VERSION:-latest}
+    container_name: ${PROJECT_NAME}_kanboard
+    hostname: kanboard
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - proxy
+      - db
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - $DOCKER/kanboard/data:/var/www/app/data
+      - $DOCKER/kanboard/plugins:/var/www/app/plugins
+      - $DOCKER/kanboard/ssl:/etc/nginx/ssl
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      ## HTTP Routers
+      - "traefik.http.routers.kanboard-rtr.entrypoints=https"
+      - "traefik.http.routers.kanboard-rtr.rule=Host(`kanboard.$DOMAIN`)"
+      - "traefik.http.routers.kanboard-rtr.tls=true"
+      - "traefik.http.routers.kanboard-rtr.tls.certresolver=digitalocean"
+      - "traefik.http.routers.kanboard-rtr.tls.domains[0].main=$DOMAIN"
+      - "traefik.http.routers.kanboard-rtr.tls.domains[0].sans=*.$DOMAIN"
+      ## Middlewares
+      - "traefik.http.routers.kanboard-rtr.middlewares=secure-headers@file"
+      ## HTTP Services
+      - "traefik.http.routers.kanboard-rtr.service=kanboard-svc"
+      - "traefik.http.services.kanboard-svc.loadbalancer.server.port=80"
+
+networks:
+  proxy:
+    external: true
+  db:
+    external: true

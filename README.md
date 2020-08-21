@@ -11,3 +11,4 @@ scripts and docker-compose files for my own cloud (actually a raspberrypi4 4GB)
 - Portainer - WebUI for Containers
 - Postgres – Database
 - FreshRSS - RSS Feed Aggregator
+- Kanboard - Kanban Project Management

@@ -132,3 +132,10 @@ freshrss-logs:
 	docker-compose -f freshrss.yml logs -f freshrss
 freshrss-down:
 	docker-compose -f freshrss.yml down
+
+kanboard-up:
+	docker-compose -f kanboard.yml --env-file=.env up -d
+kanboard-logs:
+	docker-compose -f kanboard.yml logs -f kanboard
+kanboard-down:
+	docker-compose -f kanboard.yml down
