@@ -18,11 +18,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $DOCKER/kanboard/data:/var/www/app/data
       - $DOCKER/kanboard/plugins:/var/www/app/plugins
-      - $DOCKER/kanboard/ssl:/etc/nginx/ssl
     environment:
-      - PUID=$PUID
-      - PGID=$PGID
-      - TZ=$TZ
+      - DATABASE_URL=postgres://kanboard:kanboard@postgres:5432/kanboard
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
